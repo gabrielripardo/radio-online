@@ -2,8 +2,18 @@ import Image from "next/image";
 import SearchbarIMG from "../../../assets/icons/searchbar.svg";
 import EditIMG from "../../../assets/icons/edit.svg";
 import DeleteIMG from "../../../assets/icons/delete.svg";
+import StopIMG from "../../../assets/icons/stop.svg";
+import PlayIMG from "../../../assets/icons/play.svg";
+import { Radio } from "../models/Radio";
 
-export default function FavoriteList() {
+interface WrapperProps {
+  currentRadio: Radio;
+  favoriteRadios: Radio[];
+}
+
+export default function FavoriteList({currentRadio, favoriteRadios}: WrapperProps) {
+  console.log('# currentRadio ', currentRadio);
+
     return (
         <div>   
           <header className="flex justify-between items-end w-full">
@@ -18,13 +28,17 @@ export default function FavoriteList() {
             </form>
           </header>
           <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">
-            <li className="text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                Nome da rádio atual 
+            <li className="flex gap-3 p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image src={StopIMG} alt="Stop radio" /></button> 
+                <span>{currentRadio.name}</span>
             </li>
-            <li className="text-xl flex justify-between border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
-              <div>
-                <span className="flex flex-col font-semibold">CNR-R</span> 
-                <small className="text-sm">China, news</small> 
+            <li className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
+              <div className="flex gap-4">
+                <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
+                <span>
+                  <span className="flex flex-col font-semibold">CNR-R</span> 
+                  <small className="text-sm">China, news</small> 
+                </span>
               </div>
               <div className="flex gap-4">
                 <button title="edit favorite">
