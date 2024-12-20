@@ -53,6 +53,7 @@ export default function Home() {
       setFavorites(list);
       setFavsBackup(list);
     }
+    return favs;
   }
 
   function removeDuplicates(arr: Radio[], key: CallableFunction) {
@@ -96,7 +97,7 @@ export default function Home() {
         <h1 className="text-center text-2xl">Radio Browser</h1>        
         {
            radios.length > 0 && 
-            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} audio={audio} changeRadio={changeRadio} favsBackup={favsBackup}/>          
+            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} getFavorites={getFavorites} audio={audio} changeRadio={changeRadio} favsBackup={favsBackup}/>          
         }
       </main>
     </div>

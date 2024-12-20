@@ -10,6 +10,7 @@ import { Radio } from "../models/Radio";
 import AlertModel from "../models/AlertModel"
 import { ChangeEvent, useEffect, useState } from "react";
 import Alert from "./Alert"
+import EditFavorite from "./EditFavorite";
 
 
 interface WrapperProps {
@@ -19,9 +20,10 @@ interface WrapperProps {
   audio: HTMLAudioElement;  
   changeRadio: Function;
   favsBackup: Radio[];
+  getFavorites: Function;
 }
 
-export default function FavoriteList({currentRadio, favorites, setFavorites, audio, changeRadio, favsBackup}: WrapperProps) {          
+export default function FavoriteList({currentRadio, favorites, setFavorites, audio, changeRadio, favsBackup, getFavorites}: WrapperProps) {          
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [statusAudio, setStatusAudio] = useState<string>("");  
   const [searchKey, setSearchKey] = useState("");      
@@ -30,6 +32,8 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
     message: "",
     type: ""
   });
+  const [openModal, setOpenModal] = useState<boolean>();
+  const [favEdit, setFavEdit] = useState<Radio>(currentRadio);
   
   const handleSearchFav = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchKey(event.target.value)    
@@ -53,6 +57,11 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
     localStorage.setItem('favorites', JSON.stringify(curList));    
     setShowAlert(true);
     setDataAlert({message: "Favorite has been deleted!", type: "error"})
+  }
+
+  const editFavorite = (radio: Radio) => {
+    setFavEdit(radio);
+    setOpenModal(true);
   }
 
   const playFavoriteRadio = (radio: Radio) => {    
@@ -97,6 +106,9 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
         <div>   
           { showAlert && 
             <Alert message={dataAlert.message} type={dataAlert.type} setShowAlert={setShowAlert} />
+          }
+          { openModal &&
+            <EditFavorite openModal={openModal} setOpenModal={setOpenModal} setFavorites={setFavorites} getFavorites={getFavorites} favEdit={favEdit}/>
           }
           <div className="my-4 w-full text-sm text-left rtl:text-right p-2 text-black">            
           { /* Current Radio */
@@ -172,7 +184,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                     </div>
                     <div className="flex gap-4">
                       <button title="edit favorite">
-                        <Image src={EditIMG} alt="Edit Favorite" />                  
+                        <Image src={EditIMG} alt="Edit Favorite" onClick={() => editFavorite(fav)}/>                  
                       </button>
                       <button title="delete favorite" onClick={() => removeFavorite(fav)}>
                         <Image src={DeleteIMG} alt="Delete Favorite" />                
