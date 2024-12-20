@@ -14,9 +14,10 @@ interface WrapperProps {
   favorites: Radio[];
   setFavorites: Function;
   audio: HTMLAudioElement;  
+  changeRadio: Function;
 }
 
-export default function FavoriteList({currentRadio, favorites, setFavorites, audio}: WrapperProps) {          
+export default function FavoriteList({currentRadio, favorites, setFavorites, audio, changeRadio}: WrapperProps) {          
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [statusAudio, setStatusAudio] = useState<string>("")  
 
@@ -28,9 +29,13 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
   }
 
   const removeFavorite = () => {
-    setFavorites([...favorites.filter((f: Radio) => f.stationuuid != currentRadio.stationuuid)])
+    setFavorites([...favorites.filter((f: Radio) => f.stationuuid != currentRadio.stationuuid)]);
     localStorage.setItem('favorites', JSON.stringify(favorites));    
-    alert("Favorito removido")
+    alert("Favorito removido");
+  }
+
+  const playFavoriteRadio = (radio: Radio) => {    
+    changeRadio(radio);    
   }
 
   const verifyAudio = () => {
@@ -120,23 +125,25 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
             {/* Favorite Radios */}
             {
               favorites.length > 0 && favorites.map(fav => 
-                <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
-                  <div className="flex gap-4">
-                    <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
-                    <span className="flex flex-col ">
-                      <span className="font-semibold">{fav.name}</span> 
-                      <small className="text-sm">{fav.state} - {fav.country}</small> 
-                    </span>
-                  </div>
-                  <div className="flex gap-4">
-                    <button title="edit favorite">
-                      <Image src={EditIMG} alt="Edit Favorite" />                  
-                    </button>
-                    <button title="delete favorite">
-                      <Image src={DeleteIMG} alt="Delete Favorite" />                
-                    </button>
-                  </div>
-                </li>                
+                fav.stationuuid !== currentRadio.stationuuid && (
+                  <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
+                    <div className="flex gap-4">
+                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playFavoriteRadio(fav)}><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
+                      <span className="flex flex-col ">
+                        <span className="font-semibold">{fav.name}</span> 
+                        <small className="text-sm">{fav.state} - {fav.country}</small> 
+                      </span>
+                    </div>
+                    <div className="flex gap-4">
+                      <button title="edit favorite">
+                        <Image src={EditIMG} alt="Edit Favorite" />                  
+                      </button>
+                      <button title="delete favorite">
+                        <Image src={DeleteIMG} alt="Delete Favorite" />                
+                      </button>
+                    </div>
+                  </li>                
+                )                
               )                            
             }
           </ol>

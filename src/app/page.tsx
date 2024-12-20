@@ -93,7 +93,7 @@ export default function Home() {
         <h1 className="text-center text-2xl">Radio Browser</h1>        
         {
            radios.length > 0 && 
-            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} audio={audio}/>          
+            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} audio={audio} changeRadio={changeRadio}/>          
         }
       </main>
     </div>
