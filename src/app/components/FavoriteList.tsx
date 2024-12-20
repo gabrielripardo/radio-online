@@ -5,14 +5,55 @@ import DeleteIMG from "../../../assets/icons/delete.svg";
 import StopIMG from "../../../assets/icons/stop.svg";
 import PlayIMG from "../../../assets/icons/play.svg";
 import { Radio } from "../models/Radio";
+import { useEffect, useState } from "react";
 
 interface WrapperProps {
   currentRadio: Radio;
   favoriteRadios: Radio[];
+  audio: HTMLAudioElement;
 }
 
-export default function FavoriteList({currentRadio, favoriteRadios}: WrapperProps) {
-  console.log('# currentRadio ', currentRadio);
+export default function FavoriteList({currentRadio, favoriteRadios, audio}: WrapperProps) {          
+  const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [statusAudio, setStatusAudio] = useState<string>("")
+
+  const playAudio = () => {   
+    setStatusAudio("loading...")     
+    audio.onerror = function (error) {
+      console.log('# error audio ', error);
+      setStatusAudio("Offline radio")   
+      setIsPlaying(false);         
+    };    
+    
+    audio.oncanplay = () => {      
+      console.log('# playing');
+      audio.play()
+      console.log('# ev oncanplay ');      
+      setIsPlaying(true);
+      setStatusAudio("");      
+    }        
+
+  }
+  
+  const stopAudio = () => {
+    console.log('# pause');
+    audio.pause()    
+    audio.onpause = () => {      
+      console.log('# on pause');
+      audio.pause()
+      console.log('# ev oncanplay ');      
+      setIsPlaying(false);
+      setStatusAudio("");      
+      setIsPlaying(false);
+    }    
+  }
+
+  useEffect(() => {    
+    console.log('# currentRadio ', currentRadio);  
+    if(currentRadio.url != ""){
+      playAudio();      
+    }            
+  }, [currentRadio])
 
     return (
         <div>   
@@ -27,16 +68,39 @@ export default function FavoriteList({currentRadio, favoriteRadios}: WrapperProp
               </div>
             </form>
           </header>
-          <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">
-            <li className="flex gap-3 p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image src={StopIMG} alt="Stop radio" /></button> 
-                <span>{currentRadio.name}</span>
-            </li>
+          <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">            
+            { /* Current Radio */
+              currentRadio.url != "" && (
+                <li className="flex gap-3 p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
+                  {
+                    isPlaying ?
+                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => stopAudio()}><Image src={StopIMG} alt="Stop radio" /></button>                   
+                    : 
+                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playAudio()}><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button>       
+                  }
+                  <span className="flex flex-col ">
+                    <span className="font-semibold"><span>{currentRadio.name}</span></span> 
+                    {
+                      isPlaying ?
+                        <small className="text-sm">Playing</small> 
+                      :
+                        <small className="text-sm">Stoped</small> 
+                    }
+                    {
+                      statusAudio != "" && (
+                        <small className="text-sm"> - {statusAudio}</small> 
+                      )
+                    }
+                  </span>
+                </li>
+              )
+            }   
+            {/* Favorite Radios */}
             <li className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
               <div className="flex gap-4">
                 <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
-                <span>
-                  <span className="flex flex-col font-semibold">CNR-R</span> 
+                <span className="flex flex-col ">
+                  <span className="font-semibold">CNR-R</span> 
                   <small className="text-sm">China, news</small> 
                 </span>
               </div>

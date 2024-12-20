@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [radios, setRadios] = useState<Radio[]>([]);
+  const [page, setPage] = useState<number>(0);
   const [currRadio, setCurrRadio] = useState<Radio>({
     stationuuid: "",
     name: "",
@@ -17,17 +18,36 @@ export default function Home() {
     country: "",
     state: "",
   });
+  const [audio, setAudio] = useState<HTMLAudioElement>(new Audio(currRadio.url));  
 
   useEffect(() => {    
-    getRadios().then((radios: Radio[]) => {
-      setRadios(radios)
-      console.log('# radios ', radios);
+    getRadios(page).then((list: Radio[]) => {      
+      const curList = removeDuplicates(
+        [...radios, ...list], 
+        (radio: Radio) => radio.stationuuid
+      )
+      setRadios(curList)
+      console.log('# list ', list);
     })
-  }, []);
+  }, [page]);
 
   const changeRadio = (radio: Radio) => {
-    setCurrRadio(radio);
+    setCurrRadio(radio);        
+    audio.src = radio.url;        
   }
+
+  const loadMore = () => {
+    console.log('# loading more...');
+    setPage(page+1);
+  }
+
+  function removeDuplicates(arr: Radio[], key: CallableFunction) {
+    return [
+      ...new Map(
+        arr.map(x => [key(x), x])
+      ).values()
+    ];
+}
 
   return (
     <div className="flex font-">            
@@ -55,13 +75,14 @@ export default function Home() {
                 </a>
             </li>           
           </ul>
-        </div>
+          <button className="bg-blue-600 p-2" onClick={() => loadMore()}>Exibir mais...</button>
+        </div>        
       </aside>
       <main className="flex flex-col justify-start p-8 w-full bg-gray-300">
         <h1 className="text-center text-2xl">Radio Browser</h1>        
         {
            radios.length > 0 && 
-            <FavoriteList currentRadio={currRadio} favoriteRadios={[]}/>          
+            <FavoriteList currentRadio={currRadio} favoriteRadios={[]} audio={audio}/>          
         }
       </main>
     </div>
