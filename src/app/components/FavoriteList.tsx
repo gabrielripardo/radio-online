@@ -7,7 +7,10 @@ import PlayIMG from "../../../assets/icons/play.svg";
 import FavoriteIMG from "../../../assets/icons/favorite.svg"
 import UnFavoriteIMG from "../../../assets/icons/unfavorite.svg"
 import { Radio } from "../models/Radio";
+import AlertModel from "../models/AlertModel"
 import { ChangeEvent, useEffect, useState } from "react";
+import Alert from "./Alert"
+
 
 interface WrapperProps {
   currentRadio: Radio;
@@ -22,6 +25,11 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [statusAudio, setStatusAudio] = useState<string>("");  
   const [searchKey, setSearchKey] = useState("");      
+  const [showAlert, setShowAlert] = useState(false);
+  const [dataAlert, setDataAlert] = useState<AlertModel>({
+    message: "",
+    type: ""
+  });
   
   const handleSearchFav = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchKey(event.target.value)    
@@ -33,8 +41,9 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
     currentRadio.favorite = true;
     const curList = [...favorites, currentRadio]
     setFavorites(curList);
-    localStorage.setItem('favorites', JSON.stringify(curList));
-    alert("Favorito adionado")
+    localStorage.setItem('favorites', JSON.stringify(curList));        
+    setShowAlert(true);
+    setDataAlert({message: "Favorite saved successfully!", type: "success"})
   }
 
   const removeFavorite = (curRadio=currentRadio) => {
@@ -42,7 +51,8 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
     const curList = [...favorites.filter((f: Radio) => f.stationuuid != curRadio.stationuuid)];
     setFavorites(curList);
     localStorage.setItem('favorites', JSON.stringify(curList));    
-    alert("Favorito removido");
+    setShowAlert(true);
+    setDataAlert({message: "Favorite has been deleted!", type: "error"})
   }
 
   const playFavoriteRadio = (radio: Radio) => {    
@@ -85,6 +95,9 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
 
     return (
         <div>   
+          { showAlert && 
+            <Alert message={dataAlert.message} type={dataAlert.type} setShowAlert={setShowAlert} />
+          }
           <div className="my-4 w-full text-sm text-left rtl:text-right p-2 text-black">            
           { /* Current Radio */
               currentRadio.url != "" && (
