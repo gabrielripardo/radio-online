@@ -7,7 +7,7 @@ import PlayIMG from "../../../assets/icons/play.svg";
 import FavoriteIMG from "../../../assets/icons/favorite.svg"
 import UnFavoriteIMG from "../../../assets/icons/unfavorite.svg"
 import { Radio } from "../models/Radio";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface WrapperProps {
   currentRadio: Radio;
@@ -15,11 +15,19 @@ interface WrapperProps {
   setFavorites: Function;
   audio: HTMLAudioElement;  
   changeRadio: Function;
+  favsBackup: Radio[];
 }
 
-export default function FavoriteList({currentRadio, favorites, setFavorites, audio, changeRadio}: WrapperProps) {          
-  const [isPlaying, setIsPlaying] = useState<boolean>(false)
-  const [statusAudio, setStatusAudio] = useState<string>("")  
+export default function FavoriteList({currentRadio, favorites, setFavorites, audio, changeRadio, favsBackup}: WrapperProps) {          
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [statusAudio, setStatusAudio] = useState<string>("");  
+  const [searchKey, setSearchKey] = useState("");      
+  
+  const handleSearchFav = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchKey(event.target.value)    
+    const filtered = favsBackup.filter((f: Radio) => f.name.toLowerCase().includes(event.target.value.toLowerCase()))     
+    setFavorites(filtered)
+  }
 
   const addFavorite = () => {
     currentRadio.favorite = true;
@@ -72,26 +80,15 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
 
   useEffect(() => {    
     console.log('# currentRadio ', currentRadio);  
-    verifyAudio(); 
+    verifyAudio();     
   }, [currentRadio])
 
     return (
         <div>   
-          <header className="flex justify-between items-end w-full">
-            <h2>Favorite Radios</h2>  
-            <form>              
-              <div className="flex">
-                <span className="text-white inline-flex items-center px-3 text-sm text-gray-900 bg-gray-400 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                  <Image src={SearchbarIMG} alt="Edit Favorite" />                  
-                </span>
-                <input type="text" id="website-admin" className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search stations"/>
-              </div>
-            </form>
-          </header>
-          <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">            
-            { /* Current Radio */
+          <div className="my-4 w-full text-sm text-left rtl:text-right p-2 text-black">            
+          { /* Current Radio */
               currentRadio.url != "" && (
-                <li className="flex justify-between p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
+                <li className="flex justify-between p-4 text-xl border-b bg-blue-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
                   <div className="flex gap-3">
                     {
                       isPlaying ?
@@ -130,6 +127,19 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                 </li>
               )
             }   
+          </div>
+          <header className="flex justify-between items-end w-full">
+            <h2>Favorite Radios</h2>  
+            <form>              
+              <div className="flex">
+                <span className="text-white inline-flex items-center px-3 text-sm text-gray-900 bg-gray-400 border border-e-0 border-gray-300 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                  <Image src={SearchbarIMG} alt="Edit Favorite" />                  
+                </span>
+                <input type="text" id="website-admin" className="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search stations" onChange={handleSearchFav} value={searchKey}/>
+              </div>
+            </form>
+          </header>
+          <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">                        
             {/* Favorite Radios */}
             {
               favorites.length > 0 && favorites.map(fav => 

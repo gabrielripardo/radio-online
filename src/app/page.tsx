@@ -17,10 +17,12 @@ export default function Home() {
     url: "",
     country: "",
     state: "",
+    favorite: false
   });
   const [audio, setAudio] = useState<HTMLAudioElement>(new Audio(currRadio.url));  
   const [favorites, setFavorites] = useState<Radio[]>([]);
-
+  const [favsBackup, setFavsBackup] = useState<Radio[]>([]);
+  
   useEffect(() => {    
     getRadios(page).then((list: Radio[]) => {      
       const curList = removeDuplicates(
@@ -49,6 +51,7 @@ export default function Home() {
       const list: Radio[] = JSON.parse(favs)
       console.log('# favorites list ', list);
       setFavorites(list);
+      setFavsBackup(list);
     }
   }
 
@@ -93,7 +96,7 @@ export default function Home() {
         <h1 className="text-center text-2xl">Radio Browser</h1>        
         {
            radios.length > 0 && 
-            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} audio={audio} changeRadio={changeRadio}/>          
+            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} audio={audio} changeRadio={changeRadio} favsBackup={favsBackup}/>          
         }
       </main>
     </div>
