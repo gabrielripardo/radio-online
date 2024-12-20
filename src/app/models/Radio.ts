@@ -4,4 +4,5 @@ export interface Radio {
     url: string;
     country: string;
     state: string;
+    favorite: boolean;
 }

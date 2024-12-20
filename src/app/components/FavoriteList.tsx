@@ -22,15 +22,18 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
   const [statusAudio, setStatusAudio] = useState<string>("")  
 
   const addFavorite = () => {
+    currentRadio.favorite = true;
     const curList = [...favorites, currentRadio]
     setFavorites(curList);
     localStorage.setItem('favorites', JSON.stringify(curList));
     alert("Favorito adionado")
   }
 
-  const removeFavorite = () => {
-    setFavorites([...favorites.filter((f: Radio) => f.stationuuid != currentRadio.stationuuid)]);
-    localStorage.setItem('favorites', JSON.stringify(favorites));    
+  const removeFavorite = (curRadio=currentRadio) => {
+    currentRadio.favorite = false;
+    const curList = [...favorites.filter((f: Radio) => f.stationuuid != curRadio.stationuuid)];
+    setFavorites(curList);
+    localStorage.setItem('favorites', JSON.stringify(curList));    
     alert("Favorito removido");
   }
 
@@ -112,12 +115,17 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                     </span>
                   </div>
                   <div className="flex gap-4">
-                    <button title="add favorite">
-                      <Image src={FavoriteIMG} width={42} alt="add Favorite" onClick={() => addFavorite()}/>                  
-                    </button>      
-                    <button title="remove favorite">
-                      <Image src={UnFavoriteIMG} width={42}  alt="remove Favorite" onClick={() => removeFavorite()} />                  
-                    </button>                   
+                    {
+                      !currentRadio.favorite ? (
+                        <button title="add favorite" onClick={() => addFavorite()}>
+                          <Image src={UnFavoriteIMG} width={42}  alt="add Favorite"  />                  
+                        </button>      
+                      ) : (
+                        <button title="remove favorite" onClick={() => removeFavorite()}>
+                          <Image src={FavoriteIMG} width={42} alt="remove Favorite" />                  
+                        </button>                   
+                      )
+                    }
                   </div>
                 </li>
               )
@@ -125,10 +133,15 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
             {/* Favorite Radios */}
             {
               favorites.length > 0 && favorites.map(fav => 
-                fav.stationuuid !== currentRadio.stationuuid && (
+                (
                   <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
                     <div className="flex gap-4">
-                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playFavoriteRadio(fav)}><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
+                    {
+                      fav.stationuuid == currentRadio.stationuuid && isPlaying ?
+                        <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => stopAudio()} disabled={statusAudio == "Offline radio"}><Image src={StopIMG} alt="Stop radio" /></button>                   
+                      : 
+                        <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playFavoriteRadio(fav)}><Image className="ml-1" src={PlayIMG} alt="Play radio"/></button>       
+                    }                      
                       <span className="flex flex-col ">
                         <span className="font-semibold">{fav.name}</span> 
                         <small className="text-sm">{fav.state} - {fav.country}</small> 
@@ -138,7 +151,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                       <button title="edit favorite">
                         <Image src={EditIMG} alt="Edit Favorite" />                  
                       </button>
-                      <button title="delete favorite">
+                      <button title="delete favorite" onClick={() => removeFavorite(fav)}>
                         <Image src={DeleteIMG} alt="Delete Favorite" />                
                       </button>
                     </div>
