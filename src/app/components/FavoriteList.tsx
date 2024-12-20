@@ -113,7 +113,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
           <div className="my-4 w-full text-sm text-left rtl:text-right p-2 text-black">            
           { /* Current Radio */
               currentRadio.url != "" && (
-                <li className="flex justify-between p-4 text-xl border-b bg-blue-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
+                <li className="flex justify-between p-4 text-xl border-b bg-lime-300 hover:bg-gray-50">               
                   <div className="flex gap-3">
                     {
                       isPlaying ?
@@ -169,7 +169,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
             {
               favorites.length > 0 ? favorites.map(fav => 
                 (
-                  <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
+                  <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b  bg-lime-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
                     <div className="flex gap-4">
                     {
                       fav.stationuuid == currentRadio.stationuuid && isPlaying ?

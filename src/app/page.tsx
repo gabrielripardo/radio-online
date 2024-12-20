@@ -3,7 +3,6 @@
 import Image from "next/image";;
 import MenuIMG from "../../assets/icons/menu.svg";
 import FavoriteList from "./components/FavoriteList";
-import CheckIMG from "../../assets/icons/check.svg";
 import {getRadios} from "../services/API"
 import { Radio } from "./models/Radio";
 import { useEffect, useState } from "react";
@@ -62,39 +61,33 @@ export default function Home() {
         arr.map(x => [key(x), x])
       ).values()
     ];
-}
+  }
 
   return (
-    <div className="flex font-">            
-      <aside id="logo-sidebar" className="top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
-        <div className="text-center">
+    <div className="flex">            
+      <aside id="logo-sidebar" className="top-0 left-0 z-40 w-64 h-screen pt-4 pr-4 transition-transform -translate-x-full bg-gray-400 border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 overflow-auto" aria-label="Sidebar">
+        <div className="text-right">
           <button>
           <Image src={MenuIMG} alt={"favorite"}/>             
           </button>
         </div>
-        <div className="h-full px-3 pb-4 bg-white dark:bg-gray-800">
+        <div className="flex flex-col items-center gap-4 h-90 px-3 pb-4">
           <ul className="space-y-2 font-medium">
             {
               radios.length > 0 && radios.map((radio: Radio) => (
                 <li key={radio.stationuuid} onClick={() => changeRadio(radio)}>
-                    <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">                  
+                    <a href="#" className="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">                  
                       <span className="ms-3">{radio.name}</span>
                     </a>
                 </li>
               ))
-            }                        
-            <li>
-                <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">                  
-                  <span className="flex-1 ms-3 whitespace-nowrap">Rádio FM</span>                  
-                  <Image src={CheckIMG} alt={"favorite"}/>   
-                </a>
-            </li>           
+            }                                    
           </ul>
-          <button className="bg-blue-600 p-2" onClick={() => loadMore()}>Exibir mais...</button>
+          <button className="bg-lime-600 p-2" onClick={() => loadMore()}>Load more...</button>
         </div>        
       </aside>
       <main className="flex flex-col justify-start p-8 w-full bg-gray-300">
-        <h1 className="text-center text-2xl">Radio Browser</h1>        
+        <h1 className="text-2xl pt-3">Radio Browser</h1>        
         {
            radios.length > 0 && 
             <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} getFavorites={getFavorites} audio={audio} changeRadio={changeRadio} favsBackup={favsBackup}/>          
