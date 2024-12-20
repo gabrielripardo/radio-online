@@ -142,7 +142,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
           <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">                        
             {/* Favorite Radios */}
             {
-              favorites.length > 0 && favorites.map(fav => 
+              favorites.length > 0 ? favorites.map(fav => 
                 (
                   <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
                     <div className="flex gap-4">
@@ -167,6 +167,8 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                     </div>
                   </li>                
                 )                
+              ) : (
+                <p className="text-white tex">No favorites found</p>
               )                            
             }
           </ol>
