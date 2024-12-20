@@ -4,18 +4,34 @@ import EditIMG from "../../../assets/icons/edit.svg";
 import DeleteIMG from "../../../assets/icons/delete.svg";
 import StopIMG from "../../../assets/icons/stop.svg";
 import PlayIMG from "../../../assets/icons/play.svg";
+import FavoriteIMG from "../../../assets/icons/favorite.svg"
+import UnFavoriteIMG from "../../../assets/icons/unfavorite.svg"
 import { Radio } from "../models/Radio";
 import { useEffect, useState } from "react";
 
 interface WrapperProps {
   currentRadio: Radio;
-  favoriteRadios: Radio[];
-  audio: HTMLAudioElement;
+  favorites: Radio[];
+  setFavorites: Function;
+  audio: HTMLAudioElement;  
 }
 
-export default function FavoriteList({currentRadio, favoriteRadios, audio}: WrapperProps) {          
+export default function FavoriteList({currentRadio, favorites, setFavorites, audio}: WrapperProps) {          
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
-  const [statusAudio, setStatusAudio] = useState<string>("")
+  const [statusAudio, setStatusAudio] = useState<string>("")  
+
+  const addFavorite = () => {
+    const curList = [...favorites, currentRadio]
+    setFavorites(curList);
+    localStorage.setItem('favorites', JSON.stringify(curList));
+    alert("Favorito adionado")
+  }
+
+  const removeFavorite = () => {
+    setFavorites([...favorites.filter((f: Radio) => f.stationuuid != currentRadio.stationuuid)])
+    localStorage.setItem('favorites', JSON.stringify(favorites));    
+    alert("Favorito removido")
+  }
 
   const verifyAudio = () => {
     if(currentRadio.url != ""){      
@@ -67,48 +83,62 @@ export default function FavoriteList({currentRadio, favoriteRadios, audio}: Wrap
           <ol className="my-4 w-full text-sm text-left rtl:text-right bg-gray-200 p-2 text-black">            
             { /* Current Radio */
               currentRadio.url != "" && (
-                <li className="flex gap-3 p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
-                  {
-                    isPlaying ?
-                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => stopAudio()} disabled={statusAudio == "Offline radio"}><Image src={StopIMG} alt="Stop radio" /></button>                   
-                    : 
-                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playAudio()}><Image className="ml-1" src={PlayIMG} alt="Play radio"/></button>       
-                  }
-                  <span className="flex flex-col ">
-                    <span className="font-semibold"><span>{currentRadio.name}</span></span> 
+                <li className="flex justify-between p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
+                  <div className="flex gap-3">
                     {
                       isPlaying ?
-                        <small className="text-sm">Playing</small> 
-                      :
-                        <small className="text-sm">Stoped</small> 
+                        <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => stopAudio()} disabled={statusAudio == "Offline radio"}><Image src={StopIMG} alt="Stop radio" /></button>                   
+                      : 
+                        <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playAudio()}><Image className="ml-1" src={PlayIMG} alt="Play radio"/></button>       
                     }
-                    {
-                      statusAudio != "" && (
-                        <small className="text-sm"> - {statusAudio}</small> 
-                      )
-                    }
-                  </span>
+                    <span className="flex flex-col ">
+                      <span className="font-semibold"><span>{currentRadio.name}</span></span> 
+                      {
+                        isPlaying ?
+                          <small className="text-sm">Playing</small> 
+                        :
+                          <small className="text-sm">Stoped</small> 
+                      }
+                      {
+                        statusAudio != "" && (
+                          <small className="text-sm"> - {statusAudio}</small> 
+                        )
+                      }
+                    </span>
+                  </div>
+                  <div className="flex gap-4">
+                    <button title="add favorite">
+                      <Image src={FavoriteIMG} width={42} alt="add Favorite" onClick={() => addFavorite()}/>                  
+                    </button>      
+                    <button title="remove favorite">
+                      <Image src={UnFavoriteIMG} width={42}  alt="remove Favorite" onClick={() => removeFavorite()} />                  
+                    </button>                   
+                  </div>
                 </li>
               )
             }   
             {/* Favorite Radios */}
-            <li className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
-              <div className="flex gap-4">
-                <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
-                <span className="flex flex-col ">
-                  <span className="font-semibold">CNR-R</span> 
-                  <small className="text-sm">China, news</small> 
-                </span>
-              </div>
-              <div className="flex gap-4">
-                <button title="edit favorite">
-                  <Image src={EditIMG} alt="Edit Favorite" />                  
-                </button>
-                <button title="delete favorite">
-                  <Image src={DeleteIMG} alt="Delete Favorite" />                
-                </button>
-              </div>
-            </li>
+            {
+              favorites.length > 0 && favorites.map(fav => 
+                <li key={fav.stationuuid} className="text-xl flex justify-between p-4 border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 my-2">
+                  <div className="flex gap-4">
+                    <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14"><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button> 
+                    <span className="flex flex-col ">
+                      <span className="font-semibold">{fav.name}</span> 
+                      <small className="text-sm">{fav.state} - {fav.country}</small> 
+                    </span>
+                  </div>
+                  <div className="flex gap-4">
+                    <button title="edit favorite">
+                      <Image src={EditIMG} alt="Edit Favorite" />                  
+                    </button>
+                    <button title="delete favorite">
+                      <Image src={DeleteIMG} alt="Delete Favorite" />                
+                    </button>
+                  </div>
+                </li>                
+              )                            
+            }
           </ol>
         </div>
     );    

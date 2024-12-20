@@ -19,6 +19,7 @@ export default function Home() {
     state: "",
   });
   const [audio, setAudio] = useState<HTMLAudioElement>(new Audio(currRadio.url));  
+  const [favorites, setFavorites] = useState<Radio[]>([]);
 
   useEffect(() => {    
     getRadios(page).then((list: Radio[]) => {      
@@ -27,6 +28,7 @@ export default function Home() {
         (radio: Radio) => radio.stationuuid
       )
       setRadios(curList)
+      getFavorites();
       console.log('# list ', list);
     })
   }, [page]);
@@ -39,6 +41,15 @@ export default function Home() {
   const loadMore = () => {
     console.log('# loading more...');
     setPage(page+1);
+  }
+
+  const getFavorites = () => {        
+    let favs = localStorage.getItem("favorites")
+    if (favs) {
+      const list: Radio[] = JSON.parse(favs)
+      console.log('# favorites list ', list);
+      setFavorites(list);
+    }
   }
 
   function removeDuplicates(arr: Radio[], key: CallableFunction) {
@@ -82,7 +93,7 @@ export default function Home() {
         <h1 className="text-center text-2xl">Radio Browser</h1>        
         {
            radios.length > 0 && 
-            <FavoriteList currentRadio={currRadio} favoriteRadios={[]} audio={audio}/>          
+            <FavoriteList currentRadio={currRadio} favorites={favorites} setFavorites={setFavorites} audio={audio}/>          
         }
       </main>
     </div>
