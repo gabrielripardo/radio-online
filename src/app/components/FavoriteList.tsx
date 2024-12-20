@@ -17,42 +17,38 @@ export default function FavoriteList({currentRadio, favoriteRadios, audio}: Wrap
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [statusAudio, setStatusAudio] = useState<string>("")
 
-  const playAudio = () => {   
-    setStatusAudio("loading...")     
-    audio.onerror = function (error) {
-      console.log('# error audio ', error);
-      setStatusAudio("Offline radio")   
-      setIsPlaying(false);         
-    };    
-    
-    audio.oncanplay = () => {      
-      console.log('# playing');
-      audio.play()
-      console.log('# ev oncanplay ');      
-      setIsPlaying(true);
-      setStatusAudio("");      
-    }        
+  const verifyAudio = () => {
+    if(currentRadio.url != ""){      
+      setStatusAudio("loading...")     
 
+      audio.onerror = function (error) {
+        console.log('# error audio ', error);
+        setStatusAudio("Offline radio")   
+        setIsPlaying(true);         
+      };    
+
+      audio.oncanplay = () => {
+        playAudio();      
+      }
+    }   
+  }
+
+  const playAudio = () => {       
+    audio.play();  
+    setIsPlaying(true);
+    setStatusAudio("");              
   }
   
   const stopAudio = () => {
     console.log('# pause');
-    audio.pause()    
-    audio.onpause = () => {      
-      console.log('# on pause');
-      audio.pause()
-      console.log('# ev oncanplay ');      
-      setIsPlaying(false);
-      setStatusAudio("");      
-      setIsPlaying(false);
-    }    
+    audio.pause()
+    setIsPlaying(false);
+    setStatusAudio("");                
   }
 
   useEffect(() => {    
     console.log('# currentRadio ', currentRadio);  
-    if(currentRadio.url != ""){
-      playAudio();      
-    }            
+    verifyAudio(); 
   }, [currentRadio])
 
     return (
@@ -74,9 +70,9 @@ export default function FavoriteList({currentRadio, favoriteRadios, audio}: Wrap
                 <li className="flex gap-3 p-4 text-xl border-b bg-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">               
                   {
                     isPlaying ?
-                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => stopAudio()}><Image src={StopIMG} alt="Stop radio" /></button>                   
+                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => stopAudio()} disabled={statusAudio == "Offline radio"}><Image src={StopIMG} alt="Stop radio" /></button>                   
                     : 
-                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playAudio()}><Image className="ml-1" src={PlayIMG} alt="Play radio" /></button>       
+                      <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playAudio()}><Image className="ml-1" src={PlayIMG} alt="Play radio"/></button>       
                   }
                   <span className="flex flex-col ">
                     <span className="font-semibold"><span>{currentRadio.name}</span></span> 
