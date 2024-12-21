@@ -14,8 +14,7 @@ export default function EditFavorite({openModal, setOpenModal, favEdit, setFavor
     const [name, setName] = useState<string>(favEdit.name.trim());
 
     const save = () => {
-        const favs: Radio[] = JSON.parse(getFavorites());
-        console.log('# favs favorites ', favs);
+        const favs: Radio[] = JSON.parse(getFavorites());        
         const filtered = favs.map((favorite: Radio) => {
             if(favorite.stationuuid == favEdit.stationuuid){
                 return ({
@@ -25,8 +24,7 @@ export default function EditFavorite({openModal, setOpenModal, favEdit, setFavor
             }        
             return favorite;    
         })
-
-        console.log('# filtered ', filtered);
+        
         localStorage.setItem('favorites', JSON.stringify(filtered));   
         setFavorites(filtered);
         setOpenModal(false);

@@ -31,8 +31,7 @@ export default function Home() {
         (radio: Radio) => radio.stationuuid
       )
       setRadios(curList)
-      getFavorites();
-      console.log('# list ', list);
+      getFavorites();      
     })
   }, [page]);
 
@@ -46,7 +45,6 @@ export default function Home() {
   }
 
   const loadMore = () => {
-    console.log('# loading more...');
     setPage(page+1);
   }
 
@@ -54,7 +52,6 @@ export default function Home() {
     const favs = localStorage.getItem("favorites")
     if (favs) {
       const list: Radio[] = JSON.parse(favs)
-      console.log('# favorites list ', list);
       setFavorites(list);
       setFavsBackup(list);
     }

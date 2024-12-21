@@ -74,8 +74,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
       setStatusAudio("loading...")     
 
       if(audio.current){
-        audio.current.onerror = function (error) {
-          console.log('# error audio ', error);
+        audio.current.onerror = function (error) {          
           setStatusAudio("Offline radio")   
           setIsPlaying(true);         
         };    
@@ -96,16 +95,14 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
   }
   
   const stopAudio = () => {
-    if(audio.current){
-      console.log('# pause');
+    if(audio.current){      
       audio.current.pause()
       setIsPlaying(false);
       setStatusAudio("");                
     }
   }
 
-  useEffect(() => {    
-    console.log('# currentRadio ', currentRadio);  
+  useEffect(() => {        
     verifyAudio();     
   }, [currentRadio])
 
