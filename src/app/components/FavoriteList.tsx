@@ -121,7 +121,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                       : 
                         <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playAudio()}><Image className="ml-1" src={PlayIMG} alt="Play radio"/></button>       
                     }
-                    <span className="flex flex-col ">
+                    <span className="flex flex-col w-30 sm:w-100">
                       <span className="font-semibold"><span>{currentRadio.name}</span></span> 
                       {
                         isPlaying ?
@@ -177,12 +177,12 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
                       : 
                         <button className="flex justify-center items-center rounded-full bg-gray-400 w-14 h-14" onClick={() => playFavoriteRadio(fav)}><Image className="ml-1" src={PlayIMG} alt="Play radio"/></button>       
                     }                      
-                      <span className="flex flex-col ">
+                      <span className="flex flex-col w-30 sm:w-70">
                         <span className="font-semibold">{fav.name}</span> 
                         <small className="text-sm">{fav.state} - {fav.country}</small> 
                       </span>
                     </div>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 flex-col sm:flex-row items-center justify-center">
                       <button title="edit favorite">
                         <Image src={EditIMG} alt="Edit Favorite" onClick={() => editFavorite(fav)}/>                  
                       </button>

@@ -8,6 +8,7 @@ import { Radio } from "./models/Radio";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [showMenu, setShowMenu] = useState(true);
   const [radios, setRadios] = useState<Radio[]>([]);
   const [page, setPage] = useState<number>(0);
   const [currRadio, setCurrRadio] = useState<Radio>({
@@ -63,30 +64,34 @@ export default function Home() {
     ];
   }
 
+  const handleMenu = () => {
+    setShowMenu(!showMenu)
+  }
+
   return (
-    <div className="flex">            
-      <aside id="logo-sidebar" className="top-0 left-0 z-40 w-64 h-screen pt-4 pr-4 transition-transform -translate-x-full bg-gray-400 border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700 overflow-auto" aria-label="Sidebar">
-        <div className="text-right">
-          <button>
+    <div className="flex h-100">                  
+      <aside>
+        <button className="fixed z-40 left-4 top-4" onClick={() => handleMenu()}>
           <Image src={MenuIMG} alt={"favorite"}/>             
-          </button>
+        </button>      
+        <div id="logo-sidebar" className={`top-0 left-0  w-64 h-screen pt-4 pr-4 bg-black border-r border-gray-200 ${showMenu ? 'block' : 'hidden'} fixed sm:relative overflow-auto`} aria-label="Sidebar">
+          <div className="flex flex-col items-center gap-4 h-90 px-3 pb-4">
+            <ul className="space-y-2 mt-10 font-medium">
+              {
+                radios.length > 0 && radios.map((radio: Radio) => (
+                  <li key={radio.stationuuid} onClick={() => changeRadio(radio)}>
+                      <a href="#" className="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">                  
+                        <span className="ms-3">{radio.name}</span>
+                      </a>
+                  </li>
+                ))
+              }                                    
+            </ul>
+            <button className="bg-lime-600 p-2" onClick={() => loadMore()}>Load more...</button>
+          </div>        
         </div>
-        <div className="flex flex-col items-center gap-4 h-90 px-3 pb-4">
-          <ul className="space-y-2 font-medium">
-            {
-              radios.length > 0 && radios.map((radio: Radio) => (
-                <li key={radio.stationuuid} onClick={() => changeRadio(radio)}>
-                    <a href="#" className="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">                  
-                      <span className="ms-3">{radio.name}</span>
-                    </a>
-                </li>
-              ))
-            }                                    
-          </ul>
-          <button className="bg-lime-600 p-2" onClick={() => loadMore()}>Load more...</button>
-        </div>        
       </aside>
-      <main className="flex flex-col justify-start p-8 w-full bg-gray-300">
+      <main className="flex flex-col justify-start p-8 w-full h-100 bg-gray-300">
         <h1 className="text-2xl pt-3">Radio Browser</h1>        
         {
            radios.length > 0 && 
