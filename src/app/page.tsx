@@ -5,7 +5,7 @@ import MenuIMG from "../../assets/icons/menu.svg";
 import FavoriteList from "./components/FavoriteList";
 import {getRadios} from "../services/API"
 import { Radio } from "./models/Radio";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [showMenu, setShowMenu] = useState(true);
@@ -19,7 +19,8 @@ export default function Home() {
     state: "",
     favorite: false
   });
-  const [audio] = useState<HTMLAudioElement>(new Audio(currRadio.url));  
+  
+  const audio = useRef<HTMLAudioElement>(null);
   const [favorites, setFavorites] = useState<Radio[]>([]);
   const [favsBackup, setFavsBackup] = useState<Radio[]>([]);
   
@@ -37,7 +38,9 @@ export default function Home() {
 
   const changeRadio = (radio: Radio) => {
     setCurrRadio(radio);        
-    audio.src = radio.url;        
+    if(audio.current){
+      audio.current.src = radio.url;           
+    }
   }
 
   const loadMore = () => {
@@ -69,7 +72,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-100">                  
+    <div className="flex h-100">    
+      <audio ref={audio} src=""/>                     
       <aside>
         <button className="fixed z-40 left-4 top-4" onClick={() => handleMenu()}>
           <Image src={MenuIMG} alt={"favorite"}/>             

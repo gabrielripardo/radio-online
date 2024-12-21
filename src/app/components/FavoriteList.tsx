@@ -10,7 +10,7 @@ import FavoriteIMG from "../../../assets/icons/favorite.svg"
 import UnFavoriteIMG from "../../../assets/icons/unfavorite.svg"
 import { Radio } from "../models/Radio";
 import AlertModel from "../models/AlertModel"
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, RefObject, SetStateAction, useEffect, useState } from "react";
 import Alert from "./Alert"
 import EditFavorite from "./EditFavorite";
 
@@ -18,7 +18,7 @@ interface WrapperProps {
   currentRadio: Radio;
   favorites: Radio[];
   setFavorites: Dispatch<SetStateAction<Radio[]>>;
-  audio: HTMLAudioElement;  
+  audio: RefObject<HTMLAudioElement | null>;  
   changeRadio: CallableFunction;
   favsBackup: Radio[];
   getFavorites: CallableFunction;
@@ -73,29 +73,35 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
     if(currentRadio.url != ""){      
       setStatusAudio("loading...")     
 
-      audio.onerror = function (error) {
-        console.log('# error audio ', error);
-        setStatusAudio("Offline radio")   
-        setIsPlaying(true);         
-      };    
-
-      audio.oncanplay = () => {
-        playAudio();      
+      if(audio.current){
+        audio.current.onerror = function (error) {
+          console.log('# error audio ', error);
+          setStatusAudio("Offline radio")   
+          setIsPlaying(true);         
+        };    
+  
+        audio.current.oncanplay = () => {
+          playAudio();      
+        }
       }
     }   
   }
 
   const playAudio = () => {       
-    audio.play();  
-    setIsPlaying(true);
-    setStatusAudio("");              
+    if(audio.current){
+      audio.current.play();  
+      setIsPlaying(true);
+      setStatusAudio("");              
+    }
   }
   
   const stopAudio = () => {
-    console.log('# pause');
-    audio.pause()
-    setIsPlaying(false);
-    setStatusAudio("");                
+    if(audio.current){
+      console.log('# pause');
+      audio.current.pause()
+      setIsPlaying(false);
+      setStatusAudio("");                
+    }
   }
 
   useEffect(() => {    
