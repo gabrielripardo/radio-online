@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import SearchbarIMG from "../../../assets/icons/searchbar.svg";
 import EditIMG from "../../../assets/icons/edit.svg";
