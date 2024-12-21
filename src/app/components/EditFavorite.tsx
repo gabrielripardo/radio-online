@@ -1,13 +1,13 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { Radio } from "../models/Radio";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 
 interface WrapperProps {
     openModal: boolean;
-    setOpenModal: Function;
+    setOpenModal: Dispatch<SetStateAction<boolean>>;
     favEdit: Radio;
-    setFavorites: Function;
-    getFavorites: Function;
+    setFavorites: Dispatch<SetStateAction<Radio[]>>;
+    getFavorites: CallableFunction;
 }
 
 export default function EditFavorite({openModal, setOpenModal, favEdit, setFavorites, getFavorites}: WrapperProps) {

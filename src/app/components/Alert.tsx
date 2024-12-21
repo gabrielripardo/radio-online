@@ -1,12 +1,12 @@
 import { Toast } from "flowbite-react";
 import { HiCheck, HiX } from "react-icons/hi";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface WrapperProps {
     // title: string;
     message: string;
     type: string;
-    setShowAlert: Function;
+    setShowAlert: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Alert({message, type, setShowAlert}: WrapperProps) {

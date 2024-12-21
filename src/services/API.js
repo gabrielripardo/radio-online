@@ -7,7 +7,7 @@ export async function getRadios(page){
         const list = [];
         axios.get(baseURL+"&offset="+page).then((radios) => {
             resolve(radios.data);
-        });
+        }).catch(e => reject(e));
     
         return list;
     })

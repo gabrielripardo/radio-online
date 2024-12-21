@@ -19,7 +19,7 @@ export default function Home() {
     state: "",
     favorite: false
   });
-  const [audio, setAudio] = useState<HTMLAudioElement>(new Audio(currRadio.url));  
+  const [audio] = useState<HTMLAudioElement>(new Audio(currRadio.url));  
   const [favorites, setFavorites] = useState<Radio[]>([]);
   const [favsBackup, setFavsBackup] = useState<Radio[]>([]);
   
@@ -46,7 +46,7 @@ export default function Home() {
   }
 
   const getFavorites = () => {        
-    let favs = localStorage.getItem("favorites")
+    const favs = localStorage.getItem("favorites")
     if (favs) {
       const list: Radio[] = JSON.parse(favs)
       console.log('# favorites list ', list);

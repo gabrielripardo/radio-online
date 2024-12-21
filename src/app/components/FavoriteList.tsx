@@ -10,19 +10,18 @@ import FavoriteIMG from "../../../assets/icons/favorite.svg"
 import UnFavoriteIMG from "../../../assets/icons/unfavorite.svg"
 import { Radio } from "../models/Radio";
 import AlertModel from "../models/AlertModel"
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 import Alert from "./Alert"
 import EditFavorite from "./EditFavorite";
-
 
 interface WrapperProps {
   currentRadio: Radio;
   favorites: Radio[];
-  setFavorites: Function;
+  setFavorites: Dispatch<SetStateAction<Radio[]>>;
   audio: HTMLAudioElement;  
-  changeRadio: Function;
+  changeRadio: CallableFunction;
   favsBackup: Radio[];
-  getFavorites: Function;
+  getFavorites: CallableFunction;
 }
 
 export default function FavoriteList({currentRadio, favorites, setFavorites, audio, changeRadio, favsBackup, getFavorites}: WrapperProps) {          
@@ -34,7 +33,7 @@ export default function FavoriteList({currentRadio, favorites, setFavorites, aud
     message: "",
     type: ""
   });
-  const [openModal, setOpenModal] = useState<boolean>();
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [favEdit, setFavEdit] = useState<Radio>(currentRadio);
   
   const handleSearchFav = (event: ChangeEvent<HTMLInputElement>) => {
