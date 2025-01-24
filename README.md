@@ -18,7 +18,4 @@ yarn dev
 ## Acesso (produção)
  [Site](https://theonlineradio.netlify.app/)
 
- ## Apresentação
- [Vídeo](https://www.loom.com/share/094bea2c7d0b4e96bcd76a90216b40b6)
-
 Desafio proposto pela Coodesh.
